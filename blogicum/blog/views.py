@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.http import Http404
 
 posts = [
     {
@@ -44,6 +44,8 @@ posts = [
     },
 ]
 
+Posts_to_check_id = {post['id']: post for post in posts}
+
 
 def index(request):
     context = {'posts': reversed(posts)}
@@ -51,7 +53,9 @@ def index(request):
 
 
 def post_detail(request, id):
-    context = {'post': posts[int(id)]}
+    if id not in Posts_to_check_id:
+        raise Http404('Упс..такой записи не обнаружено..')
+    context = {'post': posts[id]}
     return render(request, 'blog/detail.html', context)
 
 
